@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Gestão de Orientações — V0.2.1</title>
+<style>
+:root{
+  --bg:#f2f4f5;--paper:#fff;--ink:#20282c;--muted:#687579;--line:#d9e0e1;
+  --blue:#364359;--green:#5FDEA8;--yellow:#FFB900;--neutral:#ACBEBF;
+  --soft:#eef3f3;--danger:#a14b44;--warning:#9a7009;--success:#267553;
+  --shadow:0 18px 46px rgba(31,40,44,.09);--radius:22px;
+}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--ink)}
+button,input,select,textarea{font:inherit}.hidden{display:none!important}button{cursor:pointer}.app{min-height:100vh}
+.eyebrow{text-transform:uppercase;font-size:10px;letter-spacing:.15em;color:var(--muted);font-weight:900}.subtle{color:var(--muted);line-height:1.5}
+.btn{border:0;border-radius:999px;padding:11px 17px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.15s ease}
+.btn:hover{transform:translateY(-1px)}.btn-primary{background:var(--blue);color:#fff}.btn-highlight{background:var(--yellow);color:#27291e}.btn-secondary{background:#edf2f2;color:var(--ink)}.btn-soft{background:rgba(95,222,168,.18);color:#1f6046}.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}.btn-danger{background:#f6e4e1;color:var(--danger)}
+.icon-btn{width:41px;height:41px;border:1px solid var(--line);border-radius:13px;background:#fff;display:grid;place-items:center}.tiny{border:1px solid var(--line);background:#fff;border-radius:10px;padding:7px 9px;font-size:10px;font-weight:850}.tiny.yellow{background:#fff7de;border-color:#efd58a}
+
+/* Login */
+.login-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 15% 15%,rgba(95,222,168,.17),transparent 25%),radial-gradient(circle at 88% 82%,rgba(255,185,0,.16),transparent 28%),#f4f7f8}
+.login-card{width:min(960px,100%);min-height:560px;background:#fff;border:1px solid var(--line);border-radius:32px;overflow:hidden;display:grid;grid-template-columns:1.05fr .95fr;box-shadow:var(--shadow)}
+.login-brand{background:linear-gradient(145deg,var(--blue),#53627d);padding:54px;color:#fff;display:flex;flex-direction:column;justify-content:space-between}.brand{display:flex;align-items:center;gap:13px;font-weight:900;letter-spacing:.08em}.brand-mark{width:17px;height:17px;border-radius:50%;background:var(--yellow);box-shadow:16px 0 var(--green)}.login-brand h1{font-size:48px;line-height:1.02;margin:0}.login-brand p{color:rgba(255,255,255,.73);line-height:1.6;max-width:430px}.login-form{padding:54px;display:flex;flex-direction:column;justify-content:center}.login-form h2{font-size:34px;margin:9px 0 6px}.field{display:flex;flex-direction:column;gap:7px;margin-top:16px}.field label{font-size:12px;font-weight:850}.field input,.field select,.field textarea{width:100%;padding:12px 13px;border:1px solid var(--line);background:#fff;border-radius:13px;outline:0;color:var(--ink)}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(95,222,168,.12)}.login-actions{margin-top:23px}
+
+/* Professor shell */
+.shell{min-height:100vh;display:grid;grid-template-columns:252px 1fr}.sidebar{height:100vh;position:sticky;top:0;background:var(--blue);padding:23px 18px;color:#fff;display:flex;flex-direction:column}.side-logo{font-size:20px;font-weight:950;letter-spacing:.08em;padding:9px 10px 25px}.side-logo small{display:block;font-size:8px;letter-spacing:.14em;color:rgba(255,255,255,.54);margin-top:5px}.nav{display:flex;flex-direction:column;gap:5px}.nav button{border:0;background:transparent;color:rgba(255,255,255,.68);padding:12px 13px;border-radius:12px;text-align:left;font-weight:800}.nav button:hover,.nav button.active{background:rgba(255,255,255,.12);color:#fff}.side-bottom{margin-top:auto}.save-indicator{font-size:10px;color:rgba(255,255,255,.62);padding:12px;border-top:1px solid rgba(255,255,255,.11)}.profile-mini{display:flex;gap:10px;align-items:center;padding:12px}.avatar{width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-weight:950;color:#233039;background:linear-gradient(145deg,#ffe294,var(--green));border:2px solid rgba(255,255,255,.6);flex:0 0 auto}.profile-mini strong{display:block;font-size:12px}.profile-mini span{display:block;font-size:10px;color:rgba(255,255,255,.56);margin-top:2px}.reset-link{width:100%;border:0;background:transparent;color:rgba(255,255,255,.58);text-align:left;padding:8px 12px;font-size:10px;font-weight:800}
+.main{padding:30px 34px 60px;min-width:0}.topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:26px}.topbar h1{font-size:32px;margin:4px 0 0}.top-actions{display:flex;align-items:center;gap:8px}
+.grid{display:grid;gap:18px}.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}.card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:20px;box-shadow:0 3px 10px rgba(31,40,44,.025)}.metric{min-height:122px;display:flex;flex-direction:column;justify-content:space-between}.metric strong{font-size:31px;color:var(--blue)}.metric span{font-size:12px;color:var(--muted)}.metric .trend{font-size:11px;font-weight:850;color:var(--success)}.metric.warn{background:linear-gradient(180deg,#fff8e7,#fff);border-color:#efdca5}.metric.warn strong{color:#986f0d}.section-head{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:27px 0 12px}.section-head h2{font-size:19px;margin:0}.section-head p{font-size:12px;color:var(--muted);margin:3px 0 0}
+.status{display:inline-flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900;background:#e9f6ef;color:var(--success);white-space:nowrap}.status.info{background:#eaf0f7;color:var(--blue)}.status.warning{background:#fff4d8;color:var(--warning)}.status.danger{background:#f7e6e3;color:var(--danger)}.status.neutral{background:#eef2f2;color:#637074}.status.yellow{background:#fff5d7;color:#8b6507}
+.student-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.student-card{border:1px solid var(--line);background:#fff;border-radius:19px;padding:17px;display:grid;grid-template-columns:auto 1fr auto;gap:13px;align-items:center;transition:.15s ease}.student-card:hover{box-shadow:var(--shadow);transform:translateY(-1px)}.student-card h3{font-size:15px;margin:0 0 4px}.student-card p{font-size:11px;color:var(--muted);margin:0}.student-meta{display:flex;gap:11px;margin-top:9px;flex-wrap:wrap;font-size:10px;color:var(--muted)}.student-meta strong{color:var(--ink)}.chevron{font-size:18px;color:var(--neutral);text-align:right;margin-top:6px}
+.agenda{display:flex;flex-direction:column}.agenda-row{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.agenda-row:last-child{border-bottom:0}.date-chip{background:var(--soft);border-radius:13px;padding:9px;text-align:center}.date-chip strong{font-size:17px;color:var(--blue);display:block}.date-chip span{font-size:8px;letter-spacing:.08em;color:var(--muted);font-weight:900}.agenda-row h4{font-size:13px;margin:0 0 3px}.agenda-row p{font-size:10px;color:var(--muted);margin:0}.agenda-actions{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:flex-end}.calendar-add{display:flex;justify-content:center;border:1px dashed var(--neutral);border-radius:16px;padding:17px;background:#fafcfc;margin-top:12px}
+.task-list{display:flex;flex-direction:column;gap:8px}.task{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;border:1px solid var(--line);border-radius:13px;padding:11px;background:#fff}.check{width:18px;height:18px;border:2px solid var(--line);border-radius:5px;display:grid;place-items:center;font-size:10px;margin-top:1px;user-select:none}.task.done .check{background:var(--blue);border-color:var(--blue);color:#fff}.task.done .task-title{text-decoration:line-through;color:var(--muted)}.task-title{font-size:12px;font-weight:850}.task small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.due{font-size:9px;font-weight:900;color:var(--warning);white-space:nowrap}.comment-tag{display:inline-flex;margin-top:6px;background:#edf2f2;color:var(--blue);padding:5px 7px;border-radius:999px;font-size:9px;font-weight:850}.comment-box{margin-top:7px;border:1px solid var(--line);background:#f9fbfb;border-radius:11px;padding:9px;font-size:10px;color:var(--muted);line-height:1.45}
+.empty{padding:24px;border:1px dashed var(--neutral);border-radius:16px;color:var(--muted);font-size:12px;text-align:center;background:#fbfcfc}
+
+/* Student detail */
+.student-header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-bottom:20px}.student-title{display:flex;align-items:center;gap:15px}.avatar.lg{width:72px;height:72px;border-radius:21px;font-size:20px}.student-title h1{font-size:30px;margin:0}.student-title p{font-size:12px;color:var(--muted);margin:5px 0 0}.badges{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}.badge{border:1px solid var(--line);background:#fff;padding:5px 8px;border-radius:999px;font-size:9px;font-weight:850}.progress-wrap{min-width:230px}.progress-label{display:flex;justify-content:space-between;font-size:10px;font-weight:850;margin-bottom:6px}.progress{height:8px;background:#dce4e5;border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:var(--blue);border-radius:inherit}.timeline{display:flex;overflow-x:auto;padding:13px 2px 17px}.time-item{min-width:112px;text-align:center;position:relative}.time-item:not(:last-child):after{content:"";position:absolute;top:18px;left:64%;right:-36%;height:2px;background:var(--line)}.time-dot{width:37px;height:37px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;margin:0 auto 7px;background:#fff;position:relative;z-index:1;font-weight:900;font-size:11px}.time-item.done .time-dot{background:var(--blue);border-color:var(--blue);color:#fff}.time-item.current .time-dot{border-color:var(--yellow);box-shadow:0 0 0 5px rgba(255,185,0,.2)}.time-item.missed .time-dot{background:#f5e3e0;border-color:#e7c0ba;color:var(--danger)}.time-item strong{display:block;font-size:10px}.time-item span{font-size:9px;color:var(--muted)}.orientation-card{padding:14px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:1fr auto;gap:12px}.orientation-card:last-child{border-bottom:0}.orientation-card h4{font-size:12px;margin:0 0 4px}.orientation-card p{font-size:10px;color:var(--muted);margin:0}.inline-note{margin-top:8px;padding:10px;background:#f7fafb;border:1px solid var(--line);border-radius:12px;color:var(--muted);font-size:10px;line-height:1.45}
+
+/* Editor */
+.editor-layout{display:grid;grid-template-columns:1.18fr .82fr;gap:18px}.editor-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:21px}.editor-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:17px}.editor-head h3{font-size:17px;margin:5px 0 0}.draft-pill{padding:6px 8px;border-radius:999px;background:#edf1f5;color:var(--blue);font-size:9px;letter-spacing:.1em;font-weight:900}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.topic{padding:13px 0;border-bottom:1px solid var(--line)}.topic-actions{display:flex;justify-content:flex-end;margin-top:7px}.add-line{width:100%;border:1px dashed var(--neutral);background:transparent;border-radius:13px;padding:11px;margin-top:11px;font-size:11px;font-weight:850;color:var(--muted)}.radio-group{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-top:10px}.radio-btn{border:1px solid var(--line);background:#fff;border-radius:11px;padding:9px;font-size:10px;font-weight:850}.radio-btn.active{background:var(--blue);color:#fff;border-color:var(--blue)}.publish-box{margin-top:17px;padding:15px;border-radius:15px;background:#eef4f5}.publish-box p{font-size:10px;color:var(--muted);line-height:1.5;margin:0 0 10px}.editor-task{border:1px solid var(--line);border-radius:13px;padding:11px;margin-top:8px}.editor-task .row{display:grid;grid-template-columns:1fr 125px auto;gap:8px;align-items:center}.editor-task input{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px;font-size:10px}.locked{opacity:.68;pointer-events:none}.lock-notice{padding:13px;background:#fff6dd;border:1px solid #eed48a;border-radius:14px;font-size:10px;color:#7f610e;margin-bottom:14px}
+
+/* Student app */
+.student-shell{min-height:100vh;background:#eef3f4;padding:18px}.phone{width:min(440px,100%);min-height:calc(100vh - 36px);margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:30px;padding:18px;box-shadow:var(--shadow)}.mobile-top{display:flex;justify-content:space-between;align-items:center}.mobile-brand{font-weight:950;letter-spacing:.08em;color:var(--blue)}.mobile-profile{display:flex;align-items:center;gap:8px}.mobile-profile .avatar{width:38px;height:38px;border-radius:12px}.hello{margin:27px 0 17px}.hello h1{font-size:27px;margin:0}.hello p{font-size:12px;color:var(--muted);margin:4px 0 0}.hero-card{background:linear-gradient(145deg,var(--blue),#53627d);border-radius:22px;padding:19px;color:#fff}.hero-card .eyebrow{color:rgba(255,255,255,.57)}.hero-card h2{font-size:19px;margin:8px 0 4px}.hero-card p{font-size:10px;color:rgba(255,255,255,.7);margin:0}.next-orientation{display:flex;justify-content:space-between;align-items:flex-end;margin-top:15px;padding:13px;border-radius:15px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.08)}.next-orientation strong{font-size:20px}.mobile-section{margin-top:21px}.mobile-section h3{font-size:14px;margin:0 0 9px}.mobile-task{display:flex;gap:9px;padding:11px 0;border-bottom:1px solid var(--line)}.mobile-task .check{cursor:pointer}.mobile-task strong{font-size:12px}.mobile-task small{display:block;font-size:10px;color:var(--muted);margin-top:3px}.comment-trigger{border:0;background:#eef3f3;color:var(--blue);border-radius:999px;padding:6px 9px;font-size:9px;font-weight:850;margin-top:7px}.history-item{display:grid;grid-template-columns:50px 1fr auto;gap:9px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}.history-date{font-size:10px;font-weight:900;color:var(--blue)}.history-item h4{font-size:11px;margin:0 0 3px}.history-item p{font-size:9px;color:var(--muted);margin:0}.ack-card{border:1px solid var(--line);border-radius:17px;padding:15px;margin-top:9px}.ack-card p{font-size:10px;color:var(--muted);line-height:1.5}.acknowledged{padding:9px 10px;border-radius:11px;background:#e8f5ee;color:var(--success);font-size:10px;font-weight:900;text-align:center;margin-top:9px}
+
+/* modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(24,31,34,.48);display:grid;place-items:center;padding:18px;z-index:80}.modal{width:min(570px,100%);max-height:92vh;overflow:auto;background:#fff;border-radius:23px;padding:21px;box-shadow:var(--shadow)}.modal h3{font-size:19px;margin:5px 0 4px}.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modal-actions{display:flex;justify-content:flex-end;gap:7px;margin-top:18px;flex-wrap:wrap}.toast{position:fixed;right:20px;bottom:20px;background:#20282c;color:#fff;padding:11px 14px;border-radius:13px;font-size:10px;font-weight:850;box-shadow:var(--shadow);opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s;z-index:100}.toast.show{opacity:1;transform:none}
+.activity-item{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--line)}.activity-item:last-child{border-bottom:0}.activity-dot{width:8px;height:8px;border-radius:50%;background:var(--neutral);margin-top:4px;flex:0 0 auto}.activity-item strong{font-size:10px}.activity-item p{font-size:9px;color:var(--muted);margin:2px 0 0}
+
+@media(max-width:980px){.grid-3{grid-template-columns:1fr 1fr}.student-grid{grid-template-columns:1fr}.editor-layout{grid-template-columns:1fr}}
+@media(max-width:760px){.login-card{grid-template-columns:1fr}.login-brand{display:none}.shell{grid-template-columns:1fr}.sidebar{height:auto;position:relative;flex-direction:row;align-items:center;padding:9px 11px;overflow:auto}.side-logo{padding:8px 10px;white-space:nowrap}.side-logo small,.side-bottom{display:none}.nav{flex-direction:row}.nav button{white-space:nowrap}.main{padding:20px 14px 45px}.grid-3,.grid-2,.modal-grid,.form-row{grid-template-columns:1fr}.topbar h1{font-size:26px}.student-header{flex-direction:column}.progress-wrap{width:100%;min-width:0}.editor-task .row{grid-template-columns:1fr}.agenda-row{grid-template-columns:64px 1fr}.agenda-actions{grid-column:2;justify-content:flex-start}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section id="loginScreen" class="login-screen">
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="brand"><span class="brand-mark"></span> TCC DASHBOARD</div>
+        <div><h1>Orientações organizadas de ponta a ponta.</h1><p>Protótipo funcional para testar agenda, registros, tarefas, comentários e ciência antes do backend real.</p></div>
+        <small style="color:rgba(255,255,255,.48)">V0.2.1 · persistência local no navegador</small>
+      </div>
+      <div class="login-form">
+        <span class="eyebrow">Ambiente de prototipação</span><h2>Entrar</h2>
+        <p class="subtle">Nesta etapa você simula os dois lados do sistema. Os dados permanecem neste navegador.</p>
+        <div class="field"><label>Perfil</label><select id="profileSelect"><option value="professor">Professor / Administrador</option><option value="student">Estudante (simulação local)</option></select></div>
+        <div class="field"><label>E-mail</label><input placeholder="seu e-mail" value="" /></div>
+        <div class="field"><label>Senha</label><input type="password" placeholder="senha (simulada nesta versão)" value="" /></div>
+        <div class="login-actions"><button class="btn btn-primary" onclick="enterDemo()">Entrar no protótipo →</button></div>
+        <p style="font-size:10px;color:var(--muted);margin-top:14px">Nesta V0.2.1 o acesso ainda é simulado. Os dados ficam somente no navegador deste dispositivo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="professorApp" class="shell hidden">
+    <aside class="sidebar">
+      <div class="side-logo">TCC<small>DASHBOARD DE ORIENTAÇÕES</small></div>
+      <div class="nav">
+        <button data-view="dashboard" class="active" onclick="showView('dashboard')">⌂ Dashboard</button>
+        <button data-view="students" onclick="showView('students')">◉ Orientandos</button>
+        <button data-view="calendar" onclick="showView('calendar')">□ Agenda</button>
+        <button data-view="editor" onclick="openEditor()">✎ Nova orientação</button>
+      </div>
+      <div class="side-bottom">
+        <div class="save-indicator">● dados salvos neste navegador</div>
+        <button class="reset-link" onclick="resetAllData()">⌫ limpar todos os dados</button>
+        <div class="profile-mini"><div class="avatar">RA</div><div><strong>Rafael Andrade</strong><span>Administrador · protótipo</span></div></div>
+      </div>
+    </aside>
+    <main class="main">
+      <div class="topbar"><div><span class="eyebrow">2026 · 2º semestre</span><h1 id="pageTitle">Dashboard</h1></div><div class="top-actions"><button class="icon-btn" title="Ver como estudante atual" onclick="switchToStudent()">◫</button><button class="icon-btn" title="Sair" onclick="logout()">↗</button></div></div>
+      <div id="view-dashboard" class="view"></div>
+      <div id="view-students" class="view hidden"></div>
+      <div id="view-calendar" class="view hidden"></div>
+      <div id="view-editor" class="view hidden"></div>
+      <div id="view-studentdetail" class="view hidden"></div>
+    </main>
+  </section>
+
+  <section id="studentApp" class="student-shell hidden"><div class="phone" id="studentPhone"></div></section>
+
+  <div id="scheduleModal" class="modal-backdrop hidden"><div class="modal">
+    <span class="eyebrow" id="scheduleEyebrow">Agendar orientação</span><h3 id="scheduleTitle">Nova orientação</h3><p class="subtle" style="font-size:11px;margin-top:0">Crie ou edite o compromisso sem sair da agenda.</p>
+    <input id="scheduleId" type="hidden" />
+    <div class="modal-grid"><div class="field"><label>Orientando</label><select id="scheduleStudent"></select></div><div class="field"><label>Modalidade</label><select id="scheduleMode"><option>Presencial</option><option>Online</option></select></div><div class="field"><label>Data</label><input type="date" id="scheduleDate" /></div><div class="field"><label>Horário</label><input type="time" id="scheduleTime" /></div></div>
+    <div class="field"><label>Status</label><select id="scheduleStatus"><option value="agendada">Agendada</option><option value="realizada">Realizada</option><option value="falta">Não compareceu</option><option value="cancelada">Cancelada</option></select></div>
+    <div class="field"><label>Observação de agenda</label><textarea id="scheduleObs" rows="3" placeholder="Local, pauta, observação rápida..."></textarea></div>
+    <div class="modal-actions"><button id="deleteScheduleBtn" class="btn btn-danger hidden" onclick="deleteScheduledOrientation()">Excluir</button><button class="btn btn-secondary" onclick="closeScheduleModal()">Cancelar</button><button id="openRecordBtn" class="btn btn-ghost hidden" onclick="openRecordFromModal()">Abrir registro</button><button class="btn btn-highlight" onclick="saveSchedule()">Salvar</button></div>
+  </div></div>
+
+  <div id="studentModal" class="modal-backdrop hidden"><div class="modal">
+    <span class="eyebrow" id="studentModalEyebrow">Orientando</span><h3 id="studentModalTitle">Novo orientando</h3><p class="subtle" style="font-size:11px;margin-top:0">Nesta V0.2.1 o cadastro fica somente neste navegador.</p>
+    <input id="studentId" type="hidden" />
+    <div class="field"><label>Nome completo</label><input id="studentName" placeholder="Nome do estudante" /></div>
+    <div class="modal-grid"><div class="field"><label>Área / linha do projeto</label><input id="studentArea" placeholder="Ex.: Design Editorial" /></div><div class="field"><label>Título / projeto</label><input id="studentProject" placeholder="Ex.: Projeto de TCC" /></div></div>
+    <div class="field"><label>Status</label><select id="studentStatus"><option value="em-dia">Em dia</option><option value="atencao">Atenção</option><option value="atrasado">Atrasado</option></select></div>
+    <div class="modal-actions"><button id="deleteStudentBtn" class="btn btn-danger hidden" onclick="deleteStudent()">Excluir</button><button class="btn btn-secondary" onclick="closeStudentModal()">Cancelar</button><button class="btn btn-primary" onclick="saveStudent()">Salvar orientando</button></div>
+  </div></div>
+
+  <div id="commentModal" class="modal-backdrop hidden"><div class="modal">
+    <span class="eyebrow">Comentário do estudante</span><h3 id="commentTitle">Adicionar comentário</h3><p class="subtle" id="commentSubtitle" style="font-size:11px;margin-top:0"></p>
+    <div class="field"><label>Comentário</label><textarea id="commentInput" rows="5" placeholder="Escreva uma dúvida, justificativa ou atualização..."></textarea></div>
+    <div class="modal-actions"><button class="btn btn-secondary" onclick="closeCommentModal()">Cancelar</button><button class="btn btn-primary" onclick="saveComment()">Salvar comentário</button></div>
+  </div></div>
+
+  <div id="toast" class="toast">ok</div>
+</div>
+
+<script>
+const STORAGE_KEY = 'tcc_dashboard_v021_clean_state';
+let currentView = 'dashboard';
+let currentEditorId = null;
+let editorDraft = null;
+let commentContext = null;
+
+function seedState(){
+  return {
+    version:2.1,
+    activeStudentId:null,
+    students:[],
+    orientations:[],
+    activity:[]
+  };
+}
+function loadState(){try{const raw=localStorage.getItem(STORAGE_KEY);return raw?JSON.parse(raw):seedState()}catch(e){return seedState()}}
+let state = loadState();
+function persist(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));renderAll()}
+function uid(prefix){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,6)}
+function student(id){return state.students.find(s=>s.id===id)}
+function orientation(id){return state.orientations.find(o=>o.id===id)}
+function esc(v=''){return String(v).replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]))}
+function fmtDate(d){if(!d)return '—';const [y,m,day]=d.split('-');return `${day}/${m}/${y}`}
+function shortDate(d){if(!d)return '—';const months=['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];const [y,m,day]=d.split('-');return `${day} ${months[Number(m)-1]}`}
+function fmtDateTime(v){if(!v)return '—';const d=new Date(v);return d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}
+function statusLabel(s){return {agendada:'Agendada',realizada:'Realizada',falta:'Não compareceu',cancelada:'Cancelada'}[s]||s}
+function statusClass(s,o){if(s==='realizada'&&o&&!o.acknowledgedAt&&o.published)return 'warning';if(s==='realizada')return '';if(s==='agendada')return 'info';if(s==='falta')return 'danger';return 'neutral'}
+function studentStatus(s){return { 'em-dia':['Em dia',''], 'atencao':['Atenção','warning'], 'atrasado':['Atrasado','danger'] }[s]||['Em dia','']}
+function allTasks(studentId=null){return state.orientations.filter(o=>!studentId||o.studentId===studentId).flatMap(o=>o.tasks.map(t=>({...t,orientationId:o.id,studentId:o.studentId}))) }
+function overdue(t){return !t.done && t.due && t.due < new Date().toISOString().slice(0,10)}
+function addActivity(text){state.activity.unshift({id:uid('a'),text,at:new Date().toISOString()});state.activity=state.activity.slice(0,30)}
+
+function enterDemo(){document.getElementById('loginScreen').classList.add('hidden');document.getElementById('profileSelect').value==='student'?switchToStudent():switchToProfessor()}
+function logout(){document.getElementById('professorApp').classList.add('hidden');document.getElementById('studentApp').classList.add('hidden');document.getElementById('loginScreen').classList.remove('hidden')}
+function switchToProfessor(){document.getElementById('studentApp').classList.add('hidden');document.getElementById('professorApp').classList.remove('hidden');showView(currentView==='studentdetail'?'studentdetail':'dashboard')}
+function switchToStudent(){document.getElementById('professorApp').classList.add('hidden');document.getElementById('studentApp').classList.remove('hidden');renderStudentApp()}
+function showView(name){currentView=name;document.querySelectorAll('#professorApp .view').forEach(v=>v.classList.add('hidden'));document.getElementById('view-'+name).classList.remove('hidden');document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===name));const titles={dashboard:'Dashboard',students:'Orientandos',calendar:'Agenda',editor:'Registro da orientação',studentdetail:'Perfil do orientando'};document.getElementById('pageTitle').textContent=titles[name]||'Dashboard';renderAll()}
+function toast(text){const el=document.getElementById('toast');el.textContent=text;el.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2200)}
+function resetAllData(){
+  if(confirm('Apagar todos os dados salvos neste navegador e voltar ao sistema vazio?')){
+    state=seedState();
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(state));
+    currentEditorId=null;editorDraft=null;currentView='dashboard';
+    showView('dashboard');
+    toast('Dados locais apagados.');
+  }
+}
+
+function renderAll(){renderDashboard();renderStudents();renderAgenda();if(currentView==='studentdetail')renderStudentDetail();if(currentView==='editor'&&editorDraft)renderEditorView();if(!document.getElementById('studentApp').classList.contains('hidden'))renderStudentApp()}
+
+function renderDashboard(){
+  const active=state.students.length;const tasks=allTasks();const late=tasks.filter(overdue);const next=state.orientations.filter(o=>o.status==='agendada').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,3);
+  const comments=state.orientations.flatMap(o=>[...o.comments.map(c=>({o,c})),...o.tasks.flatMap(t=>t.comments.map(c=>({o,t,c})))]).length;
+  const studentCards=state.students.length?state.students.map(s=>studentCardHTML(s)).join(''):`<div class="empty" style="grid-column:1/-1"><strong style="display:block;color:var(--ink);margin-bottom:6px">Comece cadastrando seu primeiro orientando.</strong>O sistema está vazio e pronto para ser alimentado do zero.<br><button class="btn btn-primary" style="margin-top:12px" onclick="openStudentModal()">+ Cadastrar orientando</button></div>`;
+  const agendaHTML=next.length?next.map(o=>agendaRowHTML(o,true)).join(''):'<div class="empty">Nenhuma orientação futura.</div>';
+  const lateHTML=late.length?late.slice(0,4).map(t=>{const s=student(t.studentId);return `<div class="task"><div class="check"></div><div><div class="task-title">${esc(s.name)} · ${esc(t.title)}</div><small>Prazo ${fmtDate(t.due)}</small>${t.comments.length?'<span class="comment-tag">💬 estudante comentou</span>':''}</div><span class="due">ATRASADO</span></div>`}).join(''):'<div class="empty">Nenhuma tarefa atrasada.</div>';
+  document.getElementById('view-dashboard').innerHTML=`
+  <div class="grid grid-3"><div class="card metric"><span>Orientandos ativos</span><strong>${active}</strong><div class="trend">Estrutura pronta para expansão</div></div><div class="card metric"><span>Orientações agendadas</span><strong>${state.orientations.filter(o=>o.status==='agendada').length}</strong><div class="trend">Salvos neste navegador</div></div><div class="card metric warn"><span>Tarefas em atraso</span><strong>${late.length}</strong><div class="trend" style="color:#8b6507">${comments} comentários registrados</div></div></div>
+  <div class="section-head"><div><h2>Seus orientandos</h2><p>O estudante simulado será o último perfil que você abrir.</p></div><button class="btn btn-secondary" onclick="showView('students')">Ver todos</button></div><div class="student-grid">${studentCards}</div>
+  <div class="grid grid-2" style="margin-top:18px"><div class="card"><div class="section-head" style="margin-top:0"><div><h2>Próximas orientações</h2><p>Clique em editar para alterar sem sair do fluxo.</p></div></div><div class="agenda">${agendaHTML}</div></div><div class="card"><div class="section-head" style="margin-top:0"><div><h2>Pendências</h2><p>Atualizadas a partir das tarefas reais do protótipo.</p></div></div><div class="task-list">${lateHTML}</div></div></div>
+  <div class="card" style="margin-top:18px"><div class="section-head" style="margin-top:0"><div><h2>Atividade recente</h2><p>Pequeno histórico para validar rastreabilidade.</p></div></div>${activityHTML()}</div>`;
+}
+function studentCardHTML(s){const ss=studentStatus(s.status);const tasks=allTasks(s.id);const next=state.orientations.filter(o=>o.studentId===s.id&&o.status==='agendada').sort((a,b)=>a.date.localeCompare(b.date))[0];return `<div class="student-card" onclick="openStudent('${s.id}')"><div class="avatar" style="background:linear-gradient(145deg,${s.gradient})">${esc(s.initials)}</div><div><h3>${esc(s.name)}</h3><p>${esc(s.area)} · ${esc(s.project)}</p><div class="student-meta"><span>Próxima <strong>${next?shortDate(next.date):'—'}</strong></span><span><strong>${tasks.filter(t=>!t.done).length}</strong> pendentes</span><span><strong>${tasks.filter(overdue).length}</strong> atrasadas</span></div></div><div><span class="status ${ss[1]}">● ${ss[0]}</span><div class="chevron">›</div></div></div>`}
+function activityHTML(){return state.activity.length?state.activity.slice(0,6).map(a=>`<div class="activity-item"><span class="activity-dot"></span><div><strong>${esc(a.text)}</strong><p>${fmtDateTime(a.at)}</p></div></div>`).join(''):'<div class="empty">Sem atividade registrada.</div>'}
+
+function renderStudents(){
+  const body=state.students.length?`<div class="student-grid">${state.students.map(studentCardHTML).join('')}</div>`:`<div class="empty"><strong style="display:block;color:var(--ink);margin-bottom:6px">Nenhum orientando cadastrado.</strong>Cadastre o primeiro perfil para começar a usar agenda, registros e visão do estudante.</div>`;
+  document.getElementById('view-students').innerHTML=`<div class="section-head" style="margin-top:0"><div><h2>Orientandos</h2><p>Cadastre os perfis que serão usados neste teste local.</p></div><button class="btn btn-primary" onclick="openStudentModal()">+ Novo orientando</button></div>${body}`
+}
+function openStudent(id){if(!student(id))return;state.activeStudentId=id;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));currentView='studentdetail';showView('studentdetail')}
+
+function initialsFromName(name){return name.trim().split(/\s+/).filter(Boolean).slice(0,2).map(x=>x[0].toUpperCase()).join('')||'--'}
+function openStudentModal(id=null){
+  const s=id?student(id):null;
+  document.getElementById('studentId').value=s?s.id:'';
+  document.getElementById('studentModalTitle').textContent=s?'Editar orientando':'Novo orientando';
+  document.getElementById('studentModalEyebrow').textContent=s?'Orientando · edição':'Cadastrar orientando';
+  document.getElementById('studentName').value=s?s.name:'';
+  document.getElementById('studentArea').value=s?s.area:'';
+  document.getElementById('studentProject').value=s?s.project:'';
+  document.getElementById('studentStatus').value=s?s.status:'em-dia';
+  document.getElementById('deleteStudentBtn').classList.toggle('hidden',!s);
+  document.getElementById('studentModal').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('studentName').focus(),30);
+}
+function closeStudentModal(){document.getElementById('studentModal').classList.add('hidden')}
+function saveStudent(){
+  const id=document.getElementById('studentId').value;
+  const name=document.getElementById('studentName').value.trim();
+  const area=document.getElementById('studentArea').value.trim();
+  const project=document.getElementById('studentProject').value.trim();
+  const status=document.getElementById('studentStatus').value;
+  if(!name){toast('Informe o nome do orientando.');return}
+  const data={name,initials:initialsFromName(name),area:area||'TCC',project:project||'Projeto de TCC',status,gradient:'#ffe08c,#5FDEA8'};
+  if(id){Object.assign(student(id),data);addActivity(`${name} teve o cadastro atualizado`)}
+  else{const newStudent={id:uid('s'),...data};state.students.push(newStudent);state.activeStudentId=newStudent.id;addActivity(`${name} foi cadastrado como orientando`)}
+  closeStudentModal();persist();toast(id?'Orientando atualizado.':'Orientando cadastrado.');
+}
+function deleteStudent(){
+  const id=document.getElementById('studentId').value;if(!id)return;const s=student(id);const linked=state.orientations.filter(o=>o.studentId===id).length;
+  const msg=linked?`Excluir ${s.name} e também ${linked} orientação(ões) vinculada(s)?`:`Excluir ${s.name}?`;
+  if(confirm(msg)){
+    state.students=state.students.filter(x=>x.id!==id);state.orientations=state.orientations.filter(o=>o.studentId!==id);
+    if(state.activeStudentId===id)state.activeStudentId=state.students[0]?.id||null;
+    addActivity(`${s.name} foi removido do protótipo`);closeStudentModal();persist();currentView='students';showView('students');toast('Orientando excluído.');
+  }
+}
+
+function renderAgenda(){
+  const items=[...state.orientations].sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  document.getElementById('view-calendar').innerHTML=`<div class="card"><div class="section-head" style="margin-top:0"><div><h2>Agenda de orientações</h2><p>O popup cria e edita compromissos sem trocar de página.</p></div><button class="btn btn-highlight" onclick="openScheduleModal()">+ Agendar orientação</button></div><div class="agenda">${items.length?items.map(o=>agendaRowHTML(o,false)).join(''):'<div class="empty">Nenhuma orientação cadastrada.</div>'}</div><div class="calendar-add"><button class="btn btn-secondary" onclick="openScheduleModal()">Agendar nova orientação</button></div></div>`;
+}
+function agendaRowHTML(o,compact){const s=student(o.studentId);if(!s)return '';const cls=statusClass(o.status,o);const label=o.status==='realizada'&&o.published&&!o.acknowledgedAt?'Aguardando ciência':statusLabel(o.status);return `<div class="agenda-row"><div class="date-chip"><strong>${o.date.split('-')[2]}</strong><span>${shortDate(o.date).split(' ')[1]} · ${o.time}</span></div><div><h4>${esc(s.name)}</h4><p>${esc(o.mode)}${o.scheduleNote?' · '+esc(o.scheduleNote):''}${o.published?' · registro publicado':''}</p></div><div class="agenda-actions"><span class="status ${cls}">${label}</span>${compact?'':`<button class="tiny" onclick="openScheduleModal('${o.id}')">Editar</button><button class="tiny yellow" onclick="openEditor('${o.id}')">Registro</button>`}</div></div>`}
+
+function openScheduleModal(id=null){
+  if(!state.students.length){toast('Cadastre um orientando antes de agendar.');openStudentModal();return}
+  const sel=document.getElementById('scheduleStudent');sel.innerHTML=state.students.map(s=>`<option value="${s.id}">${esc(s.name)}</option>`).join('');
+  const o=id?orientation(id):null;document.getElementById('scheduleId').value=o?o.id:'';document.getElementById('scheduleTitle').textContent=o?'Editar orientação':'Nova orientação';document.getElementById('scheduleEyebrow').textContent=o?'Agenda · edição':'Agendar orientação';
+  sel.value=o?o.studentId:(state.activeStudentId||state.students[0].id);document.getElementById('scheduleMode').value=o?o.mode:'Presencial';document.getElementById('scheduleDate').value=o?o.date:new Date().toISOString().slice(0,10);document.getElementById('scheduleTime').value=o?o.time:'14:00';document.getElementById('scheduleStatus').value=o?o.status:'agendada';document.getElementById('scheduleObs').value=o?o.scheduleNote:'';
+  document.getElementById('deleteScheduleBtn').classList.toggle('hidden',!o);document.getElementById('openRecordBtn').classList.toggle('hidden',!o);document.getElementById('scheduleModal').classList.remove('hidden')
+}
+function closeScheduleModal(){document.getElementById('scheduleModal').classList.add('hidden')}
+function saveSchedule(){
+  const id=document.getElementById('scheduleId').value;const data={studentId:document.getElementById('scheduleStudent').value,mode:document.getElementById('scheduleMode').value,date:document.getElementById('scheduleDate').value,time:document.getElementById('scheduleTime').value,status:document.getElementById('scheduleStatus').value,scheduleNote:document.getElementById('scheduleObs').value.trim()};if(!data.date||!data.time){toast('Informe data e horário.');return}
+  if(id){Object.assign(orientation(id),data);addActivity(`Orientação de ${student(data.studentId).name} foi atualizada`)}else{state.orientations.push({id:uid('o'),...data,published:false,acknowledgedAt:null,record:'',topics:[],comments:[],tasks:[]});addActivity(`Nova orientação agendada para ${student(data.studentId).name}`)}
+  closeScheduleModal();persist();toast(id?'Agendamento atualizado.':'Orientação agendada.')
+}
+function deleteScheduledOrientation(){const id=document.getElementById('scheduleId').value;if(!id)return;if(confirm('Excluir esta orientação do protótipo?')){const o=orientation(id);state.orientations=state.orientations.filter(x=>x.id!==id);addActivity(`Orientação de ${student(o.studentId).name} foi excluída`);closeScheduleModal();persist();toast('Orientação excluída.')}}
+function openRecordFromModal(){const id=document.getElementById('scheduleId').value;closeScheduleModal();if(id)openEditor(id)}
+
+function renderStudentDetail(){
+  const s=student(state.activeStudentId);if(!s)return;const os=state.orientations.filter(o=>o.studentId===s.id).sort((a,b)=>a.date.localeCompare(b.date));const tasks=allTasks(s.id);const done=tasks.filter(t=>t.done).length;const progress=tasks.length?Math.round(done/tasks.length*100):0;const timeline=os.map((o,i)=>{let cl='';if(o.status==='realizada')cl='done';if(o.status==='falta')cl='missed';if(o.status==='agendada'&&!os.slice(0,i).some(x=>x.status==='agendada'))cl='current';return `<div class="time-item ${cl}"><div class="time-dot">${o.status==='realizada'?'✓':o.status==='falta'?'×':i+1}</div><strong>${shortDate(o.date)}</strong><span>${statusLabel(o.status)}</span></div>`}).join('');
+  const orientationList=[...os].sort((a,b)=>b.date.localeCompare(a.date)).map(o=>{const comments=o.comments.map(c=>`<div class="inline-note">Comentário do estudante: “${esc(c.text)}” · ${fmtDateTime(c.createdAt)}</div>`).join('');return `<div class="orientation-card"><div><h4>${shortDate(o.date)} · ${statusLabel(o.status)}</h4><p>${o.published?(o.acknowledgedAt?'Ciência '+fmtDateTime(o.acknowledgedAt):'Publicado · ciência pendente'):'Registro ainda não publicado'}</p>${comments}</div><div><button class="tiny yellow" onclick="openEditor('${o.id}')">Abrir</button></div></div>`}).join('');
+  const taskList=tasks.length?tasks.map(t=>`<div class="task ${t.done?'done':''}"><div class="check">${t.done?'✓':''}</div><div><div class="task-title">${esc(t.title)}</div><small>Prazo ${fmtDate(t.due)}</small>${t.comments.length?`<span class="comment-tag">💬 ${t.comments.length} comentário${t.comments.length>1?'s':''}</span>${t.comments.map(c=>`<div class="comment-box">${esc(c.text)} · ${fmtDateTime(c.createdAt)}</div>`).join('')}`:''}</div><span class="due">${t.done?'OK':overdue(t)?'ATRASADO':shortDate(t.due)}</span></div>`).join(''):'<div class="empty">Nenhuma tarefa cadastrada.</div>';
+  const ss=studentStatus(s.status);
+  document.getElementById('view-studentdetail').innerHTML=`<div class="student-header"><div class="student-title"><div class="avatar lg" style="background:linear-gradient(145deg,${s.gradient})">${esc(s.initials)}</div><div><span class="eyebrow">Orientando</span><h1>${esc(s.name)}</h1><p>${esc(s.area)} · ${esc(s.project)}</p><div class="badges"><span class="badge">2026/2</span><span class="badge">TCC</span><span class="status ${ss[1]}">● ${ss[0]}</span></div></div></div><div class="progress-wrap"><div class="progress-label"><span>Tarefas concluídas</span><span>${progress}%</span></div><div class="progress"><i style="width:${progress}%"></i></div><button class="btn btn-secondary" style="width:100%;margin-top:12px" onclick="switchToStudent()">Ver como ${esc(s.name.split(' ')[0])}</button><button class="btn btn-ghost" style="width:100%;margin-top:8px" onclick="openStudentModal('${s.id}')">Editar orientando</button></div></div><div class="card"><span class="eyebrow">Linha do tempo</span><div class="timeline">${timeline||'<div class="empty">Sem orientações.</div>'}</div></div><div class="grid grid-2" style="margin-top:18px"><div class="card"><div class="section-head" style="margin-top:0"><div><h2>Orientações</h2><p>Registro, publicação e ciência.</p></div><button class="btn btn-primary" onclick="openEditor(null,'${s.id}')">+ Nova</button></div>${orientationList||'<div class="empty">Nenhuma orientação.</div>'}</div><div class="card"><div class="section-head" style="margin-top:0"><div><h2>Tarefas</h2><p>Comentários do estudante aparecem no contexto.</p></div></div><div class="task-list">${taskList}</div></div></div>`
+}
+
+function clone(x){return JSON.parse(JSON.stringify(x))}
+function blankOrientation(studentId){return {id:null,studentId:studentId||state.activeStudentId||(state.students[0]&&state.students[0].id)||'',date:new Date().toISOString().slice(0,10),time:'14:00',mode:'Presencial',status:'realizada',scheduleNote:'',published:false,acknowledgedAt:null,record:'',topics:[],comments:[],tasks:[]}}
+function openEditor(id=null,studentId=null){if(!id&&!state.students.length){toast('Cadastre um orientando antes de criar uma orientação.');openStudentModal();return}currentEditorId=id;editorDraft=id?clone(orientation(id)):blankOrientation(studentId);if(!editorDraft){toast('Orientação não encontrada.');return}currentView='editor';showView('editor')}
+function renderEditorView(){if(!editorDraft)return;if(!state.students.length){document.getElementById('view-editor').innerHTML='<div class="empty">Cadastre um orientando antes de criar registros.</div>';return}const locked=!!editorDraft.acknowledgedAt;const s=student(editorDraft.studentId)||state.students[0];if(!editorDraft.studentId)editorDraft.studentId=s.id;document.getElementById('view-editor').innerHTML=`<div class="editor-layout"><div class="editor-card"><div class="editor-head"><div><span class="eyebrow">Registro de orientação</span><h3>${editorDraft.id?esc(s.name):'Nova orientação'}</h3></div><span class="draft-pill">${locked?'CONGELADA':editorDraft.published?'PUBLICADA':'RASCUNHO'}</span></div>${locked?'<div class="lock-notice">O estudante já registrou ciência. Nesta V0.2.1 o conteúdo fica congelado para preservar o histórico.</div>':''}<div class="${locked?'locked':''}"><div class="form-row"><div class="field"><label>Orientando</label><select id="edStudent" onchange="updateEditorField('studentId',this.value)">${state.students.map(x=>`<option value="${x.id}" ${x.id===editorDraft.studentId?'selected':''}>${esc(x.name)}</option>`).join('')}</select></div><div class="field"><label>Modalidade</label><select id="edMode" onchange="updateEditorField('mode',this.value)"><option ${editorDraft.mode==='Presencial'?'selected':''}>Presencial</option><option ${editorDraft.mode==='Online'?'selected':''}>Online</option></select></div></div><div class="form-row"><div class="field"><label>Data</label><input type="date" value="${editorDraft.date}" onchange="updateEditorField('date',this.value)"></div><div class="field"><label>Horário</label><input type="time" value="${editorDraft.time}" onchange="updateEditorField('time',this.value)"></div></div><div class="field"><label>Registro geral</label><textarea rows="5" oninput="updateEditorField('record',this.value)">${esc(editorDraft.record)}</textarea></div><div style="margin-top:20px"><span class="eyebrow">Tópicos discutidos</span></div><div id="topicEditor">${editorDraft.topics.map((t,i)=>topicEditorHTML(t,i)).join('')}</div><button class="add-line" onclick="addEditorTopic()">+ adicionar tópico</button></div>${editorDraft.comments.length?`<div style="margin-top:18px"><span class="eyebrow">Comentários do estudante</span>${editorDraft.comments.map(c=>`<div class="inline-note">${esc(c.text)} · ${fmtDateTime(c.createdAt)}</div>`).join('')}</div>`:''}</div><div><div class="editor-card"><span class="eyebrow">Status</span><div class="radio-group ${locked?'locked':''}">${['realizada','agendada','falta','cancelada'].map(st=>`<button class="radio-btn ${editorDraft.status===st?'active':''}" onclick="setEditorStatus('${st}')">${statusLabel(st)}</button>`).join('')}</div><div style="margin-top:20px"><span class="eyebrow">Próximas ações</span></div><div class="${locked?'locked':''}" id="taskEditor">${editorDraft.tasks.map((t,i)=>editorTaskHTML(t,i)).join('')}</div><button class="add-line ${locked?'hidden':''}" onclick="addEditorTask()">+ adicionar tarefa</button><div class="publish-box"><p>${locked?'Registro já confirmado pelo estudante.':editorDraft.published?'O estudante já vê este registro. Salvar mantém as alterações sincronizadas no protótipo.':'Salve como rascunho ou publique para disponibilizar ao estudante.'}</p>${locked?'<button class="btn btn-secondary" style="width:100%" onclick="showView(\'studentdetail\')">Voltar ao orientando</button>':`<button class="btn btn-secondary" style="width:100%;margin-bottom:8px" onclick="saveEditor(false)">Salvar rascunho</button><button class="btn btn-highlight" style="width:100%" onclick="saveEditor(true)">${editorDraft.published?'Salvar alterações':'Publicar orientação'}</button>`}</div></div><div class="editor-card" style="margin-top:18px"><span class="eyebrow">Teste de fluxo</span><p class="subtle" style="font-size:10px">Depois de publicar, use “Ver como estudante” para comentar, concluir tarefas e registrar ciência.</p></div></div></div>`}
+function topicEditorHTML(t,i){return `<div class="topic"><div class="field"><label>Título</label><input value="${esc(t.title)}" oninput="editorDraft.topics[${i}].title=this.value"></div><div class="field"><label>Notas</label><textarea rows="3" oninput="editorDraft.topics[${i}].notes=this.value">${esc(t.notes)}</textarea></div><div class="topic-actions"><button class="tiny" onclick="removeEditorTopic(${i})">remover</button></div></div>`}
+function editorTaskHTML(t,i){return `<div class="editor-task"><div class="row"><input value="${esc(t.title)}" oninput="editorDraft.tasks[${i}].title=this.value" placeholder="Descrição da tarefa"><input type="date" value="${t.due||''}" oninput="editorDraft.tasks[${i}].due=this.value"><button class="tiny" onclick="removeEditorTask(${i})">remover</button></div>${t.comments&&t.comments.length?`<div class="comment-box">${t.comments.map(c=>`${esc(c.text)} · ${fmtDateTime(c.createdAt)}`).join('<br>')}</div>`:''}</div>`}
+function updateEditorField(k,v){editorDraft[k]=v;if(k==='studentId')renderEditorView()}
+function setEditorStatus(st){editorDraft.status=st;renderEditorView()}
+function addEditorTopic(){editorDraft.topics.push({id:uid('tp'),title:'',notes:''});renderEditorView()}
+function removeEditorTopic(i){editorDraft.topics.splice(i,1);renderEditorView()}
+function addEditorTask(){editorDraft.tasks.push({id:uid('t'),title:'Nova tarefa',due:editorDraft.date,done:false,comments:[]});renderEditorView()}
+function removeEditorTask(i){editorDraft.tasks.splice(i,1);renderEditorView()}
+function saveEditor(publish){
+  if(!editorDraft.studentId||!editorDraft.date){toast('Informe orientando e data.');return}editorDraft.published=publish||editorDraft.published;if(editorDraft.status!=='realizada'&&publish){editorDraft.status='realizada'};
+  if(editorDraft.id){const idx=state.orientations.findIndex(o=>o.id===editorDraft.id);state.orientations[idx]=clone(editorDraft);addActivity(`Registro de ${student(editorDraft.studentId).name} foi ${publish?'publicado/atualizado':'salvo'}`)}else{editorDraft.id=uid('o');state.orientations.push(clone(editorDraft));currentEditorId=editorDraft.id;addActivity(`Nova orientação de ${student(editorDraft.studentId).name} foi ${publish?'publicada':'salva como rascunho'}`)}
+  state.activeStudentId=editorDraft.studentId;persist();renderEditorView();toast(publish?'Orientação publicada.':'Rascunho salvo.')
+}
+
+function renderStudentApp(){
+  if(!state.students.length){
+    document.getElementById('studentPhone').innerHTML=`<div class="mobile-top"><div class="mobile-brand">TCC</div><div class="mobile-profile"><button class="icon-btn" style="width:37px;height:37px" onclick="switchToProfessor()" title="Voltar ao professor">⌂</button></div></div><div class="hello"><span class="eyebrow">V0.2.1</span><h1>Nenhum estudante cadastrado.</h1><p>Volte ao painel do professor e crie o primeiro orientando para testar esta visão.</p></div><button class="btn btn-primary" style="width:100%" onclick="switchToProfessor()">Voltar ao professor</button>`;
+    return;
+  }
+  const s=student(state.activeStudentId)||state.students[0];
+  if(!state.activeStudentId){state.activeStudentId=s.id;localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}const os=state.orientations.filter(o=>o.studentId===s.id);const published=os.filter(o=>o.published).sort((a,b)=>b.date.localeCompare(a.date));const next=os.filter(o=>o.status==='agendada').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time))[0];const tasks=os.filter(o=>o.published).flatMap(o=>o.tasks.map(t=>({...t,orientationId:o.id}))).sort((a,b)=>(a.done-b.done)||String(a.due).localeCompare(String(b.due)));const ackPending=published.find(o=>o.status==='realizada'&&!o.acknowledgedAt);
+  document.getElementById('studentPhone').innerHTML=`<div class="mobile-top"><div class="mobile-brand">TCC</div><div class="mobile-profile"><button class="icon-btn" style="width:37px;height:37px" onclick="switchToProfessor()" title="Voltar ao professor">⌂</button><div class="avatar" style="background:linear-gradient(145deg,${s.gradient})">${esc(s.initials)}</div></div></div><div class="hello"><span class="eyebrow">2026 · 2º semestre</span><h1>Olá, ${esc(s.name.split(' ')[0])}.</h1><p>Acompanhe orientações e entregas do seu TCC.</p></div><div class="hero-card"><span class="eyebrow">Seu TCC</span><h2>${esc(s.project)}</h2><p>${esc(s.area)} · Orientador: Rafael Andrade</p><div class="next-orientation">${next?`<div><span style="font-size:9px;color:rgba(255,255,255,.58)">PRÓXIMA ORIENTAÇÃO</span><strong style="display:block">${shortDate(next.date)}</strong></div><div style="text-align:right"><strong style="font-size:15px">${next.time}</strong><span style="display:block;font-size:8px;color:rgba(255,255,255,.58)">${esc(next.mode.toUpperCase())}</span></div>`:'<div><span style="font-size:10px;color:rgba(255,255,255,.62)">Nenhuma orientação futura agendada.</span></div>'}</div></div><div class="mobile-section"><div style="display:flex;justify-content:space-between;align-items:end"><h3>O que você precisa fazer</h3><span class="status">${tasks.filter(t=>!t.done).length} pendentes</span></div>${tasks.length?tasks.map(studentTaskHTML).join(''):'<div class="empty">Nenhuma tarefa publicada.</div>'}</div><div class="mobile-section"><h3>Orientações</h3>${published.length?published.map(o=>studentHistoryHTML(o)).join(''):'<div class="empty">Nenhuma orientação publicada ainda.</div>'}</div>${ackPending?studentAckHTML(ackPending):''}`
+}
+function studentTaskHTML(t){return `<div class="mobile-task"><div class="check" onclick="toggleStudentTask('${t.orientationId}','${t.id}')">${t.done?'✓':''}</div><div style="flex:1"><strong style="${t.done?'text-decoration:line-through;color:var(--muted)':''}">${esc(t.title)}</strong><small>${t.due?'Prazo '+fmtDate(t.due):'Sem prazo'}${overdue(t)?' · atrasada':''}</small>${t.comments&&t.comments.length?t.comments.map(c=>`<div class="comment-box">Seu comentário: ${esc(c.text)}</div>`).join(''):''}<button class="comment-trigger" onclick="openCommentModal('${t.orientationId}','${t.id}')">Comentar tarefa</button></div></div>`}
+function studentHistoryHTML(o){return `<div class="history-item"><div class="history-date">${shortDate(o.date)}</div><div><h4>${esc(o.record?o.record.slice(0,54):'Orientação publicada')}${o.record&&o.record.length>54?'…':''}</h4><p>${o.acknowledgedAt?'Ciência '+fmtDateTime(o.acknowledgedAt):'Aguardando ciência'}</p></div><span class="status ${o.acknowledgedAt?'':'warning'}">${o.acknowledgedAt?'✓ Ciência':'Pendente'}</span></div>`}
+function studentAckHTML(o){return `<div class="mobile-section"><h3>Registro aguardando sua ciência</h3><div class="ack-card"><span class="eyebrow">${shortDate(o.date)}</span><p>${esc(o.record||'Orientação publicada pelo professor.')}</p>${o.topics.map(t=>`<div class="inline-note"><strong>${esc(t.title)}</strong><br>${esc(t.notes)}</div>`).join('')}${o.comments.map(c=>`<div class="comment-box">Seu comentário: ${esc(c.text)}</div>`).join('')}<button class="btn btn-primary" style="width:100%;margin-top:10px" onclick="openCommentModal('${o.id}',null)">Comentar orientação</button><button class="btn btn-highlight" style="width:100%;margin-top:8px" onclick="acknowledgeOrientation('${o.id}')">Li e estou ciente</button></div></div>`}
+function toggleStudentTask(oid,tid){const o=orientation(oid);const t=o.tasks.find(x=>x.id===tid);t.done=!t.done;addActivity(`${student(o.studentId).name} marcou “${t.title}” como ${t.done?'concluída':'pendente'}`);persist();toast(t.done?'Tarefa concluída.':'Tarefa reaberta.')}
+function acknowledgeOrientation(id){const o=orientation(id);o.acknowledgedAt=new Date().toISOString();addActivity(`${student(o.studentId).name} registrou ciência em ${shortDate(o.date)}`);persist();toast('Ciência registrada.')}
+function openCommentModal(oid,tid=null){const o=orientation(oid);const t=tid?o.tasks.find(x=>x.id===tid):null;commentContext={oid,tid};document.getElementById('commentTitle').textContent=t?'Comentar tarefa':'Comentar orientação';document.getElementById('commentSubtitle').textContent=t?t.title:`Orientação de ${shortDate(o.date)}`;document.getElementById('commentInput').value='';document.getElementById('commentModal').classList.remove('hidden')}
+function closeCommentModal(){document.getElementById('commentModal').classList.add('hidden')}
+function saveComment(){const text=document.getElementById('commentInput').value.trim();if(!text){toast('Escreva um comentário.');return}const o=orientation(commentContext.oid);const c={id:uid('c'),text,createdAt:new Date().toISOString()};if(commentContext.tid){const t=o.tasks.find(x=>x.id===commentContext.tid);t.comments.push(c);addActivity(`${student(o.studentId).name} comentou a tarefa “${t.title}”`)}else{o.comments.push(c);addActivity(`${student(o.studentId).name} comentou a orientação de ${shortDate(o.date)}`)}closeCommentModal();persist();toast('Comentário salvo.')}
+
+document.getElementById('scheduleModal').addEventListener('click',e=>{if(e.target.id==='scheduleModal')closeScheduleModal()});document.getElementById('studentModal').addEventListener('click',e=>{if(e.target.id==='studentModal')closeStudentModal()});document.getElementById('commentModal').addEventListener('click',e=>{if(e.target.id==='commentModal')closeCommentModal()});
+renderAll();
+</script>
+</body>
+</html>
